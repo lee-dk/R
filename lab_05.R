@@ -39,6 +39,21 @@ if(deco == 1){
 
 #문제4
 score <- as.character(sample(0:100,1))
+if(score>=90 & score<=100){
+  score_range <- 1
+}else if(score>=80){
+  score_range <- 2
+}else if(score>=70){
+  score_range <- 3
+}else if(score>=60){
+  score_range <- 4
+}else{
+  score_range <- 5
+}
+level <- switch(EXPR = as.character(score_range),
+                "1"="A등급", "2"="B등급", "3"="C등급", "4"="C등급", "5"="F등급")
+cat(score,"점은 ",level,"입니다")
+
 level <- switch(EXPR=score,
                 "90"=,"91"=,"92"=,"93"=,"94"=,"95"=,"96"=,"97"=,"98"=,"99"=,"100"="A등급",
                 "80"=,"81"=,"82"=,"83"=,"84"=,"85"=,"86"=,"87"=,"88"=,"89"="B등급",
