@@ -45,6 +45,7 @@ names(new_a) <- NULL
 
 
 
+#반복문
 for(data in month.name) 
   print(data)
 
@@ -152,6 +153,17 @@ for(i in 1:5){
 for(dan in 1:9){
   for(num in 1:9){
     cat(dan,"x",num,"=",dan*num,"\t") # \n : 개행문자, \t : 탭문자
+  }
+  cat("\n")
+}
+
+
+for(i in 1:9){
+  for(j in 1:9){
+    if(i*j>30){
+      break
+    } 
+    cat(i,"*",j,"=",i*j,"\t")
   }
   cat("\n")
 }
