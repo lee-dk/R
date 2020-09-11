@@ -1,21 +1,20 @@
 library() # 설치된 패키지 리스트
-installed.packages()
-search()
+installed.packages() #이미 설치되어있는 패키지 리스트
+search() #load된 패키지 리스트
 
-read_excel()
-install.packages("readxl")
-install.packages("rvest") 
+read_excel() #내장 함수가 아니라 따로 설치해야함(R은 따로 내장하지 않음)
+install.packages("readxl") #엑셀문서 읽음
+install.packages("rvest") #수집에 필요한 패키지
 install.packages("XML")
 install.packages("httr")
 install.packages("readr")
 
 
-library(readxl) # require(readxl)
+library(readxl) # require(readxl) 에러없이 실행되면 로드된거임
 excel_data_ex <- read_excel("data/data_ex.xlsx")
-getwd()
-View(excel_data_ex)
+View(excel_data_ex) #출력
 search()
-str(excel_data_ex)
+str(excel_data_ex) #향상된 데이터프레임(tibble)
 
 
 
@@ -23,7 +22,7 @@ str(excel_data_ex)
 library(rvest)
 
 url <- "http://unico2013.dothome.co.kr/crawling/tagstyle.html"
-text <- read_html(url)
+text <- read_html(url) #끌어오는 함수
 text
 
 nodes <- html_nodes(text, "div")
@@ -47,9 +46,9 @@ html_text(node3)
 
 
 # 단일 페이지(rvest 패키지 사용)
-text<- NULL; title<-NULL; point<-NULL, review<-NULL; page=NULL
+text<- NULL; title<-NULL; point<-NULL; review<-NULL; page=NULL
 url<- "http://movie.naver.com/movie/point/af/list.nhn?page=1"
-text <- read_html(url,  encoding="CP949")
+text <- read_html(url,  encoding="CP949") #<- meta가 euc-kr(CP949)로 되어있어서
 text
 # 영화제목
 nodes <- html_nodes(text, ".movie")
@@ -60,8 +59,8 @@ nodes <- html_nodes(text, ".title em")
 point <- html_text(nodes)
 point
 # 영화리뷰 
-nodes <- html_nodes(text, xpath="//*[@id='old_content']/table/tbody/tr/td[2]/text()")
-nodes <- html_text(nodes, trim=TRUE)
+nodes <- html_nodes(text, xpath="//*[@id='old_content']/table/tbody/tr/td[2]/text()") #tr만 모든 인덱싱 불러오려고 []없애줌
+nodes <- html_text(nodes, trim=TRUE) #trim 쓸모없는 태그들 없애줌
 nodes
 review <- nodes[nchar(nodes) > 0] 
 review
