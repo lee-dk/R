@@ -48,8 +48,6 @@ View(page)
 write.csv(page, "movie_reviews1.csv")
 
 
-
-
 # 여러 페이지
 site<- "http://movie.naver.com/movie/point/af/list.nhn?page="
 text <- NULL

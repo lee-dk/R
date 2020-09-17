@@ -196,7 +196,6 @@ df <- df[-1]
 names(df) <- c("className", "unitName", "cycle", "keystatName", "dataValue")
 View(df)
 
-
 # 정규표현식 사용
 word <- "JAVA javascript Aa 가나다 AAaAaA123 %^&*"
 gsub(" ", "@", word); sub(" ", "@", word)
