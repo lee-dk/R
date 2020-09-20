@@ -7,31 +7,21 @@ Sys.sleep(3)
 pageLink <- NULL
 reple <- NULL
 curr_PageOldNum <- 0
-#curr_PageNewNum <- curr_PageOldNum + 1
 repeat{
   doms <- remDr$findElements(using = "css selector", "div.review_desc > p")
   Sys.sleep(1)
   reple_v <- sapply(doms, function (x) {x$getElementText()})
   print(reple_v)
   reple <- append(reple, unlist(reple_v))
-  cat(length(reple), "\n")
+  cat("현재까지", length(reple), "개의 댓글 추출\n")
   pageLink <- remDr$findElements(using='css',".hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > div.paginate > a.direction.next")
   remDr$executeScript("arguments[0].click();",pageLink)
   Sys.sleep(2)
   
-  #body > div > div.ng-scope > div.container.ng-scope > div.content > div.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > div.paginate > a.direction.next.disabled
-  #body > div > div.ng-scope > div.container.ng-scope > div.content > div.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > div.paginate > span:nth-child(4) > a
-  #body > div > div.ng-scope > div.container.ng-scope > div.content > div.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > div.paginate > span:nth-child(2) > strong
-  curr_PageElem <- remDr$findElement(using='css','.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > div.paginate > span > .ng-binding')
-  curr_PageNewNum <- as.numeric(curr_PageElem$getElementText())
-  cat(paste(curr_PageOldNum, ':', curr_PageNewNum,'\n'))
-  if(curr_PageNewNum == curr_PageOldNum)  {
+  if(length(reple) == 40)  {  #알듯하면서 못하겠어요ㅠㅠ
     cat("종료\n")
     break; 
   }
-  curr_PageOldNum <- curr_PageNewNum;
 }
-cat(length(reple), "개의 댓글 추출\n")
+cat("총 ",length(reple), "개의 댓글 추출\n")
 write(reple,"naverhotel.txt")
-
-body > div > div.ng-scope > div.container.ng-scope > div.content > div.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > div.paginate > a.direction.next.disabled
