@@ -18,7 +18,7 @@ repeat{
   remDr$executeScript("arguments[0].click();",pageLink)
   Sys.sleep(2)
   
-  if(length(reple) == 40)  {  #알듯하면서 못하겠어요ㅠㅠ
+  if(length(reple) == 40)  {  # 알듯하면서 못하겠어요ㅠㅠ
     cat("종료\n")
     break; 
   }
