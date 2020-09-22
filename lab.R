@@ -965,5 +965,505 @@ html_text(node9)
 node10 <- html_nodes(text, xpath="//*[@id='target']")
 html_text(node10)
 
+# 9월 16일
+
+library(rvest)
+text<- NULL; id<-NULL; point<-NULL; review<-NULL; page=NULL
+url<- "https://movie.daum.net/moviedb/grade?movieId=131576"
+text <- read_html(url)   
+text
+# 영화평점
+nodes <- html_nodes(text, "div.raking_grade > em")
+point <- html_text(nodes)
+point
+# 영화리뷰 
+nodes <- html_nodes(text, ".desc_review")
+review <- html_text(nodes, trim=TRUE)
+review
+page <- data.frame(point, review)
+View(page)
+write.csv(page, "daummovie1.csv")
+getwd()
+
+
+library(rvest)
+
+vuser<-NULL; vpoint<-NULL; vreview<-NULL
+
+for (page in 1:5){
+  text<- NULL; title<-NULL; point<-NULL; review<-NULL; user<-NULL
+  url<- paste0("https://movie.daum.net/moviedb/grade?movieId=131576&type=netizen&page=",page)
+  text <- read_html(url)
+  
+  # 유저 이름름
+  nodes <- html_nodes(text, ".review_info > .link_review > .link_profile")
+  user <- html_text(nodes)
+  vuser <-append(vuser,user)
+  
+  # 영화평점
+  nodes <- html_nodes(text, ".raking_grade > .emph_grade")
+  point <- html_text(nodes)
+  vpoint <-append(vpoint,point)
+  
+  # 영화리뷰
+  nodes <- html_nodes(text, ".review_info > .desc_review")
+  review <- html_text(nodes, trim=TRUE)
+  vreview <-append(vreview,review)
+}
+print(vuser)
+print(vpoint)
+print(vreview)
+crawling <- data.frame(vuser,vpoint,vreview)
+View(crawling)
+write.csv(crawling, "tocsv/daummovie2.csv")
+
+
+
+
+vuser<-NULL; vpoint<-NULL; vreview<-NULL
+page<-0
+while(TRUE){
+  page<-page+1
+  text<- NULL; title<-NULL; point<-NULL; review<-NULL; user<-NULL
+  url<- paste0("https://movie.daum.net/moviedb/grade?movieId=131576&type=netizen&page=",page)
+  text <- read_html(url)
+  
+  # 유저 이름
+  nodes <- html_nodes(text, ".review_info > .link_review > .link_profile")
+  print(nodes)
+  # 유저의 이름이 더이상 없으면 존재하지 않는 페이지
+  if(length(nodes)==0) break
+  
+  user <- html_text(nodes)
+  vuser <-append(vuser,user)
+  
+  # 영화평점
+  nodes <- html_nodes(text, ".raking_grade > .emph_grade")
+  point <- html_text(nodes)
+  vpoint <-append(vpoint,point)
+  
+  # 영화리뷰
+  nodes <- html_nodes(text, ".review_info > .desc_review")
+  review <- html_text(nodes, trim=TRUE)
+  vreview <-append(vreview,review)
+}
+crawling <- data.frame(vuser,vpoint,vreview)
+View(crawling)
+write.csv(crawling, "tocsv/daummovie3.csv")
+
+
+
+
+library(rvest)
+
+url <- "https://movie.daum.net/moviedb/grade?movieId=131576&type=netizen&page="
+review <- data.frame()
+
+## 총 리뷰 개수
+total_reviews <- html_text(html_node(read_html(url), "h4.tit_movie > span.txt_menu"))
+total_reviews <- as.integer(substr(total_reviews, 2, nchar(total_reviews)-1))
+
+## 총 페이지 수
+if(total_reviews %% 10 > 0) {
+  total_pages <- total_reviews %/% 10 + 1
+} else
+  total_pages <- total_reviews %/% 10
+
+## 평점 + 리뷰글
+for(i in c(1:total_pages)) {
+  html <- read_html(paste(url, i, sep=""))
+  # 평점
+  rating_dom <- html_nodes(html, "div.review_info em.emph_grade")
+  rating <- html_text(rating_dom)
+  
+  # 리뷰글
+  comment_dom <- html_nodes(html, "div.review_info p.desc_review")
+  comment <- html_text(comment_dom, trim=T)
+  
+  # 데이터프레임에 추가
+  review <- rbind(review, data.frame(rating, comment))
+}
+
+View(review)
+
+# save to csv
+write.csv(review, "write/daummovie3.csv")
+
+
+# 변수초기화
+text<- NULL; newstitlenodes<-NULL; newstitle<-NULL; companynodes=NULL; newspapername <- NULL; daumnews <- NULL
+# 대상사이트
+site<- "https://news.daum.net/ranking/popular/"
+
+text <- read_html(site)
+text
+
+# 뉴스제목
+newstitlenodes <- html_nodes(text, "ul.list_news2 > li > div.cont_thumb > strong > a")
+newstitle <- html_text(newstitlenodes)
+newstitle
+
+# 미디어사
+companynodes <- html_nodes(text, "ul.list_news2 > li > div.cont_thumb > strong > span")
+newspapername <- html_text(companynodes)
+newspapername
+
+# 프레임으로 저장
+daumnews <- data.frame(newstitle, newspapername )
+
+# 외부파일로 저장
+write.csv(daumnews, "daumnews.csv")
+
+
+
+library(rvest)
+
+site <- "http://media.daum.net/ranking/popular/"
+text <- read_html(site,  encoding="UTF-8") # meta 태그 확인
+text
+
+# 헤드라인 --> 사이드를 포함시키지 않도록 해야 함
+nodes <- html_nodes(text, ".list_news2 > li > .cont_thumb > .tit_thumb > .link_txt")
+newstitle <- html_text(nodes)
+newstitle
+
+# 신문사
+nodes <- html_nodes(text, ".info_news")
+newspapername <- html_text(nodes)
+newspapername
+
+page <- data.frame(newstitle, newspapername)
+View(page)
+write.csv(page, "daumnews.csv")
+
+
+# Open API를 활용한 SNS & 공공DB
+
+
+### 실습 1 네이버의 블로그에서 “맛집” 이라는 단어가 들어간 글들을 검색하여 100개까지 추출한 다음 naverblog.txt 파일로 저장하시오.
+#단, XML 형식의 요청을 처리한다.
+library(httr)
+library(rvest)
+library(XML)
+
+searchUrl<- "https://openapi.naver.com/v1/search/blog.xml"
+Client_ID <- "izGsqP2exeThwwEUVU3x"
+Client_Secret <- "WrwbQ1l6ZI"
+
+query <- URLencode(iconv("맛집","euc-kr","UTF-8")) ## 봄으로 검색, UTF-8로 인코딩해서 수행
+url <- paste0(searchUrl, "?query=", query, "&display=100") # 쿼리라는 이름으로 검색어를 전달, 그리고 100개를 받아 옴 
+doc <- GET(url, add_headers("Content_Type" = "application/xml",
+                            "X-Naver-client-Id" = Client_ID, "X-naver-Client-Secret" = Client_Secret)) ## 요청 헤더 정보
+
+doc2 <- htmlParse(doc, encoding="UTF-8")
+text<- xpathSApply(doc2, "//item/description", xmlValue)
+text
+text <- gsub("</?b>", "", text)
+text <- gsub("&.+t;", "", text)
+text
+write.table(text, "naverblog.txt")
+
+
+### 실습 2 트위터에서  “코로나” 이라는 단어가 들어간 트윗 글들을 검색하여 100개까지 추출한 다음 twitter.txt 파일로 저장하시오.
+# 제거해야 하는 문자들과 데이터 값 : 특수문자, 영어, NA 값
+
+library(rtweet) 
+appname <- "edu_data_collection"
+api_key <- "RvnZeIl8ra88reu8fm23m0bST"
+api_secret <- "wTRylK94GK2KmhZUnqXonDaIszwAsS6VPvpSsIo6EX5GQLtzQo"
+access_token <- "959614462004117506-dkWyZaO8Bz3ZXh73rspWfc1sQz0EnDU"
+access_token_secret <- "rxDWfg7uz1yXMTDwijz0x90yWhDAnmOM15R6IgC8kmtTe"
+twitter_token <- create_token( # 토큰 생성
+  app = appname,
+  consumer_key = api_key,
+  consumer_secret = api_secret,
+  access_token = access_token,
+  access_secret = access_token_secret)
+
+key <- "코로나"
+key <- enc2utf8(key) # key를 utf8로 인코딩
+result <- search_tweets(key, n=100, token = twitter_token) # 토큰을 그때그때 받아서 처리
+str(result)
+result$retweet_text ## 리트윗만
+content <- result$retweet_text
+content <- gsub("[[:upper:][:lower:][:punct:][:cntrl:]]", "", content)
+content <- content[!is.na(content)]
+content
+View(content)
+write.table(content, "twitter.txt")
+
+### 실습 3 공공DB에서 360번 차량에 대하여 정보를 추출한 다음 노선ID, 노선길이, 기점, 종점, 배차간격을 다음 형식으로 출력하시오.
+
+#[ 360번 버스정보 ]
+#노선ID : xxx
+#노선길이 : xxx
+#기점 : xxx
+#종점 : xxx
+#배차간격 : xxx
+
+#참고 : http://api.bus.go.kr/contents/sub02/getBusRouteList.html
+
+API_key  <- "%2BjzsSyNtwmcqxUsGnflvs3rW2oceFvhHR8AFkM3ao%2Fw50hwHXgGyPVutXw04uAXvrkoWgkoScvvhlH7jgD4%2FRQ%3D%3D"  # 인증키
+bus_No <- "360"
+url <- paste("http://ws.bus.go.kr/api/rest/busRouteInfo/getBusRouteList?ServiceKey=", API_key, "&strSrch=", bus_No, sep="")
+doc <- xmlParse(url, encoding="UTF-8") # xml 응답 내용으로 pathing
+top <- xmlRoot(doc) #최상위 태그부터
+top
+df <- xmlToDataFrame(getNodeSet(doc, "//itemList")) # 데이터 프레임으로 변환 // 특정(itemlist) 태그 이하 태그 내용을 전부 데이터로 변환
+df
+
+busRouteId <- df[1,]$busRouteId
+length <- df[1,]$length
+stStationNm <- df[1,]$stStationNm
+edStationNm <- df[1,]$edStationNm
+term <- df[1,]$term
+
+cat("[ 360번 버스정보 ]", "\n노선ID : ", busRouteId, 
+    "\n노선길이 : ", length, "\n기점 : ", stStationNm, "\n종점 : ", edStationNm, "\n배차간격 : ", term)
+
+#실습4
+
+library(jsonlite)
+
+rm(list=ls())
+searchUrl<- "https://openapi.naver.com/v1/search/news.json"
+Client_ID <- "izGsqP2exeThwwEUVU3x"
+Client_Secret <- "WrwbQ1l6ZI"
+
+query <- URLencode(iconv("빅데이터","euc-kr","UTF-8"))
+url <- paste0(searchUrl, "?query=", query, "&display=100")
+doc <- GET(url, add_headers("Content_Type" = "application/json",
+                            "X-Naver-client-Id" = Client_ID, "X-naver-Client-Secret" = Client_Secret))
+json_data <- content(doc, type = 'text', encoding = "UTF-8")
+json_obj <- fromJSON(json_data)
+text <- json_obj$items$title
+View(text)
+text <- gsub("</?b>", "", text)
+text <- gsub("&.+t;", "", text)
+write(text,"navernews.txt")
+
+
+
+remDr <- remoteDriver(remoteServerAddr = "localhost" , port = 4445, browserName = "chrome")
+remDr$open()
+url<-'https://hotel.naver.com/hotels/item?hotelId=hotel:Shilla_Stay_Yeoksam&destination_kor=%EC%8B%A0%EB%9D%BC%EC%8A%A4%ED%85%8C%EC%9D%B4%20%EC%97%AD%EC%82%BC&rooms=2'
+remDr$navigate(url)
+
+vreviews<-NULL
+#element 추출
+while(TRUE){
+  reviews<-remDr$findElements(using ="css selector","ul > li > div.review_desc > p")
+  vreviews<-append(vreviews,unlist(sapply(reviews,function(x){x$getElementText()})))
+  print(unlist(sapply(reviews,function(x){x$getElementText()})))
+  
+  
+  disablenextbtn<-remDr$findElements(using ="css selector","div.review_ta.ng-scope > div.paginate > a.direction.next.disabled")
+  print(disablenextbtn)
+  if(length(disablenextbtn)) break
+  else {
+    Sys.sleep(2)
+    nextbtn<-remDr$findElement(using ="css selector","div.review_ta.ng-scope > div.paginate > a.direction.next")
+    print(nextbtn)
+    nextbtn$clickElement()
+    Sys.sleep(2)
+    
+  }
+}
+
+print(vreviews)
+write(vreviews,"tocsv/naverhotel.txt")
+
+
+library(RSelenium)
+
+remDr <- remoteDriver(remoteServerAddr = "localhost" , port = 4445, browserName = "chrome")
+remDr$open()
+url<-'https://hotel.naver.com/hotels/item?hotelId=hotel:Shilla_Stay_Yeoksam&destination_kor=%EC%8B%A0%EB%9D%BC%EC%8A%A4%ED%85%8C%EC%9D%B4%20%EC%97%AD%EC%82%BC&rooms=2'
+remDr$navigate(url)
+Sys.sleep(3)
+pageLink <- NULL
+last_pageLink <- NULL
+reple <- NULL
+
+repeat{
+  doms <- remDr$findElements(using = "css selector", "div.review_desc > p")
+  reple_v <- sapply(doms, function (x) {x$getElementText()})
+  reple <- append(reple, unlist(reple_v))
+  
+  try(last_pageLink <- remDr$findElements(using='css',"body > div > div.ng-scope > div.container.ng-scope > div.content > div.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > div.paginate > a.direction.next.disabled"))
+  if(length(last_pageLink)!=0)
+    break
+  
+  pageLink <- remDr$findElements(using='css',"body > div > div.ng-scope > div.container.ng-scope > div.content > div.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > div.paginate > a.direction.next")
+  remDr$executeScript("arguments[0].click();",pageLink)
+  Sys.sleep(2)
+}
+
+View(reple)
+write(reple, "naverhotel.txt")
+
+
+remDr <- remoteDriver(remoteServerAddr="localhost", port=4445, browserName="chrome")
+remDr$open()
+url_hotel <- "https://hotel.naver.com/hotels/item?hotelId=hotel:Shilla_Stay_Yeoksam&destination_kor=%EC%8B%A0%EB%9D%BC%EC%8A%A4%ED%85%8C%EC%9D%B4%20%EC%97%AD%EC%82%BC&rooms=2"
+remDr$navigate(url_hotel)
+Sys.sleep(3)
+hotel_review_link <- NULL
+hotel_review <- NULL
+first_review_writer <- NULL
+
+repeat{
+  doms_naver <- remDr$findElements(using="css selector", "body > div > div.ng-scope > div.container.ng-scope > div.content > div.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > ul > li > div.review_desc > p")
+  Sys.sleep(1)
+  review_single_page <- sapply(doms_naver, function(x){x$getElementText()})
+  print(review_single_page)
+  hotel_review <- append(hotel_review, unlist(review_single_page))
+  first_review <- remDr$findElement(using="css selector", "body > div > div.ng-scope > div.container.ng-scope > div.content > div.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > ul > li:nth-child(1) > div.info > span:nth-child(5)")
+  first_review_writer <- first_review$getElementText()
+  next_page_link <- remDr$findElement(using="css selector", "body > div > div.ng-scope > div.container.ng-scope > div.content > div.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > div.paginate > a.direction.next")
+  next_page_link$clickElement()
+  Sys.sleep(3)
+  new_review <- remDr$findElement(using="css selector", "body > div > div.ng-scope > div.container.ng-scope > div.content > div.hotel_used_review.ng-isolate-scope > div.review_ta.ng-scope > ul > li:nth-child(1) > div.info > span:nth-child(5)")
+  new_review_writer <- new_review$getElementText()
+  cat(unlist(first_review_writer), ":", unlist(new_review_writer), "\n")
+  if(unlist(first_review_writer) == unlist(new_review_writer)){
+    cat("종료","\n")
+    break
+  }
+}
+
+cat(length(hotel_review), "개의 리뷰 추출\n")
+write(hotel_review, "naverhotel.txt")
+
+
+library(RSelenium)
+remDr <- remoteDriver(remoteServerAddr = "localhost" , port = 4445, browserName = "chrome")
+remDr$open()
+
+url<-'https://hotel.naver.com/hotels/item?hotelId=hotel:Shilla_Stay_Yeoksam&destination_kor=%EC%8B%A0%EB%9D%BC%EC%8A%A4%ED%85%8C%EC%9D%B4%20%EC%97%AD%EC%82%BC&rooms=2'
+remDr$navigate(url)
+Sys.sleep(3)
+
+pageLink <- NULL
+reple <- NULL
+
+
+# 리뷰을 한 페이지 단위로 출력 
+repeat{
+  doms <- remDr$findElements(using = "css selector", "div.review_desc > p")
+  reple_v <- sapply(doms, function (x) {x$getElementText()})
+  reple <- append(reple, unlist(reple_v))
+  Sys.sleep(1)
+  
+  
+  # click 이벤트 발생
+  pageLink <- remDr$findElements(using='css',"div.review_ta.ng-scope > div.paginate > a.direction.next")
+  
+  nextpage <- remDr$findElements(using='css selector',"div.review_ta.ng-scope > div.paginate > a.direction.next.disabled")
+  
+  # '다음'버튼이 disabled이면 list에 해당 element값을 하나 리턴하므로 length가 1이됨.
+  if(length(nextpage) == 0){
+    pageLink[[1]]$clickElement()
+    Sys.sleep(2)
+  }else{
+    break;
+  }
+}
+
+library(rJava)
+library(RJDBC)
+library(DBI) 
+
+drv <- JDBC(driverClass = 'org.mariadb.jdbc.Driver', 'mariadb-java-client-2.6.2.jar')
+conn <- dbConnect(drv, 'jdbc:mariadb://127.0.0.1:3306/work', 'scott', 'tiger')# JDBC URL
+
+#(1)
+head(iris)
+str(iris)
+
+#(2)
+names(iris) <- c("slength", "swidth", "plength", "pwidth", "species")
+
+#(3)
+dbWriteTable(conn,"iris", iris)
+
+#(4)
+iris_all <- dbReadTable(conn, 'iris')
+iris_all
+
+#(5)
+query <- "select * from iris where species = 'setosa'"
+iris_setosa <- dbGetQuery(conn, query)
+iris_setosa
+
+#(6)
+query <- "select * from iris where species = 'versicolor'"
+iris_versicolor <- dbGetQuery(conn, query)
+iris_versicolor
+
+#(7)
+query <- "select * from iris where species = 'virginica'"
+iris_virginica <- dbGetQuery(conn, query)
+iris_virginica
+
+#(8)
+product <- read.table("data/product_click.log")
+productdf <- data.frame(product)
+
+#(9)
+names(productdf) <- c("clicktime", "pid"); head(productdf)
+
+#(10)
+dbWriteTable(conn,"productlog", productdf)
+
+#(11)
+query <- "select * from productlog where pid = 'p003'"
+p003 <- dbGetQuery(conn, query)
+p003
+
+#(12)
+emp <- read.csv("data/emp.csv")
+emp
+#(13)
+dbWriteTable(conn, "emp", emp)
+
+#(14)
+query <- "select * from emp order by sal desc"
+result1 <- dbGetQuery(conn, query)
+result1
+
+#(15)
+query <- "select * from emp order by hiredate asc"
+result2 <- dbGetQuery(conn, query)
+result2
+
+#(16)
+query <- "select * from emp where sal >= 2000"
+result3 <- dbGetQuery(conn, query)
+result3
+
+#(17)
+query <- "select * from emp where (sal >= 2000 && sal < 3000)"
+result4 <- dbGetQuery(conn, query)
+result4
+
+
+##########
+
+df <- data.frame(name=c(NA, 'unico', 'kjh'), score=as.character(c(100, 200, NA)))
+dbRemoveTable(conn,"imsi")
+dbWriteTable(conn, "imsi", df)
+dbReadTable(conn, "imsi")
+
+
+v <- sample(1:26, 10)
+length(v)
+
+random_alpha <- function(x){
+  return(LETTERS[x])
+}
+
+result <- sapply(v, random_alpha)
+result
 
 
