@@ -131,7 +131,7 @@ sample(1:10, 7)
 sample(1:10, 7, replace=T) #중복 허용
 
 paste("I'm","Duli","!!")
-paste("I'm","Duli","!!", sep="") # 중간에 ""주기
+paste("I'm","Duli","!!", sep=" ") # 중간에 ""주기
 paste0("I'm","Duli","!!") #중간에 공백을 주지마라
 
 fruit <- c("Apple", "Banana", "Strawberry")
