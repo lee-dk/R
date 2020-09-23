@@ -37,6 +37,7 @@ as.POSIXct("2020/01/01 08:00:00") - as.POSIXct("2020/01/01 05:00:00")
 as.POSIXlt("2020/01/01 08:00:00") - as.POSIXlt("2020/01/01 05:00:00")
 
 t<-Sys.time()
+class(t)
 ct<-as.POSIXct(t)
 lt<-as.POSIXlt(t)
 str(ct) 
@@ -50,10 +51,10 @@ as.POSIXct(1449894439,origin="1970-01-01")
 as.POSIXlt(1449894438,origin="1970-01-01")
 
 as.POSIXlt("2020/12/25")$wday
-as.POSIXlt("2020/12/25")$wday
-as.POSIXlt("2020/12/25")$wday
-as.POSIXlt("2020/12/25")$wday
-as.POSIXlt("2020/12/25")$wday
+as.POSIXlt("2020/12/26")$wday
+as.POSIXlt("2020/12/27")$wday
+as.POSIXlt("2020/12/24")$wday
+as.POSIXlt("2020/12/23")$wday
 
 
 #올해의 크리스마스 요일 2가지방법(요일명,숫자)
