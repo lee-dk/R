@@ -17,3 +17,5 @@ View(mpg)
 #1-7
 mpg %>%
   group_by(manufacturer,model)
+
+#1-8
