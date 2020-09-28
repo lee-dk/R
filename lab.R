@@ -1455,6 +1455,7 @@ dbRemoveTable(conn,"imsi")
 dbWriteTable(conn, "imsi", df)
 dbReadTable(conn, "imsi")
 
+# sapply() 함수 활용 실습
 
 v <- sample(1:26, 10)
 length(v)
@@ -1466,4 +1467,558 @@ random_alpha <- function(x){
 result <- sapply(v, random_alpha)
 result
 
+# gsub()를 활용한 텍스트 데이터 변환과 삭제
 
+lines_memo <- readLines("data/memo.txt",encoding="UTF-8")
+
+lines_memo <- lines_memo[nchar(lines_memo) > 0]
+
+memo_new <- NULL
+
+# 당신의 믿음은 &곧 당신의 생각이 되고, 당신의 $생각은 곧 당신이 내뱉는 !말이 되고, #당신이 내뱉는 말은 곧 당신의 행동이 되고, 당신의 행동은 곧 당신의 습관이 되고, @당신의 습관은 곧 당신의 가치관이 되고, 당신의 가치관은 곧 %당신의 운명이 된다.
+# 당신의 믿음은 곧 당신의 생각이 되고, 당신의 생각은 곧 당신이 내뱉는 말이 되고, 당신이 내뱉는 말은 곧 당신의 행동이 되고, 당신의 행동은 곧 당신의 습관이 되고, 당신의 습관은 곧 당신의 가치관이 되고, 당신의 가치관은 곧 당신의 운명이 된다.
+cline <- gsub("[&$!#@%]", "", lines_memo[1])
+
+memo_new <- append(memo_new, cline)
+
+# 중요한 일을 절대 e메일로 보내지 마라!
+# 중요한 일을 절대 E메일로 보내지 마라!  
+
+
+
+#cline <- gsub("[[:lower:]]", "E", lines_memo[2]) #안되겠지..
+
+cline <- gsub("e", "E", lines_memo[2])
+
+memo_new <- append(memo_new, cline)
+
+# 가장 훌륭한 일은 1모험과 2도전정신으로 이루어진다.
+# 가장 훌륭한 일은 모험과 도전정신으로 이루어진다.
+cline <- gsub("[[:digit:]]", "", lines_memo[3])
+cline <- gsub("[0-9]", "", lines_memo[3])
+cline <- gsub("[4657890123]", "", lines_memo[3])
+cline <- gsub("\\d", "", lines_memo[3])
+
+memo_new <- append(memo_new, cline)
+
+
+# 남들이 나와 같지 R 않다는 Analysis점을 Big인정Data하라.
+# 남들이 나와 같지 않다는 점을 인정하라.
+cline <- gsub("[[:lower:][:upper:]]", "", lines_memo[4])
+#gsub("[[:alpha:]]", "", lines_memo[4])
+
+memo_new <- append(memo_new, cline)
+
+# 매!일! 12아침 34삶의 56목표를 78생각하며 <일어>나라.
+# 매일 아침 삶의 목표를 생각하며 일어나라.
+cline <- gsub("[!><0-9]", "", lines_memo[5])
+
+memo_new <- append(memo_new, cline)
+
+# 위대한 일을 하는 유일한 방법은 바로 당신이 하는 일을 사랑하는 것입니다.
+# 위대한일을하는유일한방법은바로당신이하는일을사랑하는것입니다.
+cline <- gsub(" ", "", lines_memo[6])
+
+memo_new <- append(memo_new, cline)
+
+# YOU 타협(정착)하지 마세요. 왜냐하면, 당신의 마음이 하는 모든 것이 그렇듯이, 그 일을 찾게 되면 당신은 마음으로 알게 될 겁니다.  OK?
+# you 타협(정착)하지 마세요. 왜냐하면, 당신의 마음이 하는 모든 것이 그렇듯이, 그 일을 찾게 되면 당신은 마음으로 알게 될 겁니다. ok?
+cline <- gsub("YOU", "you", lines_memo[7])
+cline <- gsub("OK", "ok", cline)
+
+memo_new <- append(memo_new, cline)
+write(memo_new,"data/memo_new.txt")
+
+
+txt <- readLines("C:/Rexam/memo.txt", encoding="UTF-8")
+txt[1] <- gsub("[[:punct:]]", "", txt[1])
+txt[2] <- gsub("[[:lower:]]", "E" , txt[2])
+txt[3] <- gsub("[[:digit:]]", "", txt[3])
+txt[4] <- gsub("[A-z]", "", txt[4])
+txt[5] <- gsub("[[:punct:][:digit:]]", "", txt[5])
+txt[6] <- gsub(" ", "", txt[6])
+txt[7] <- gsub("YOU", "you", txt[7])
+txt[7] <- gsub("OK", "ok", txt[7])
+
+write.table(txt, sep='\n', file="C:/Rexam/memo_new.txt")
+
+# 날짜 데이터, 문자열 데이터 관련 실습
+
+# 문제1
+myday<-weekdays(as.POSIXlt("2000-06-29"))
+print(paste0("유니코는 ",myday,"에 태어났어요"))
+
+myday<-weekdays(as.Date("2000-06-29"))
+print(paste0("유니코는 ",myday,"에 태어났어요"))
+
+cname <- '유니코'
+weekDayBirth <- format(as.Date("20000226", "%Y%m%d"), "%a")
+resultStr <- paste(cname, " 은 ", weekDayBirth, "요일에 태어났어요",sep="")
+resultStr
+
+# 문제2
+current<-Sys.Date()
+mybirthday<-as.Date("2020-01-01")
+passed<-current-mybirthday
+passed_day<-gsub("[[:upper:][:lower:]]",'',passed)
+
+print(paste0(format(current,'오늘은 %Y년 %m월 %d일 이고 '),
+             "내가 태어난지 ",passed_day,"일째되는 날이당"))
+
+
+todayStr <- format(Sys.Date(),'오늘은 %Y년 %m월 %d일 이고')
+diffday <- Sys.Date() - as.Date("20200101", "%Y%m%d")
+
+#str(diffday)
+#unclass(diffday)
+#units(diffday) # attr을 보여줌
+
+livedDays <- unclass(diffday)[1]
+resultStr <- paste(todayStr, " 내가 태어난지 ", livedDays, "일째되는 날이당",sep="")
+resultStr
+
+
+
+# 문제3
+current<-Sys.time()
+current
+format(current,"%Y년 %m월 %d일 %H시 %M분 %S초")
+
+
+resultStr <- format(Sys.time(),'%Y년 %m월 %d일 %H시 %M분 %S초')
+resultStr
+
+# 문제4
+txt<-c('12/25/2020 23:59:59', '1/25/2021 23:59:59', '2/25/2021 23:59:59')
+df<-data.frame(txt)
+df$txt<-as.POSIXlt(strptime(txt, "%m/%d/%Y %H:%M:%S"))
+print(df$txt)
+
+df$txt<-strptime(txt, "%m/%d/%Y %H:%M:%S")
+print(df$txt)
+str(df)
+
+
+datetime <- c('12/25/2020 23:59:59', '1/25/2021 23:59:59', '2/25/2021 23:59:59')
+datetimeDf <- data.frame(datetime)
+POSIXltList <- strptime(datetimeDf$datetime, format="%m/%d/%Y %H:%M:%S")
+POSIXltList
+str(POSIXltList)
+
+# 문제5
+start<-as.Date("2020-06-01")
+end<-as.Date("2020-06-07")
+day<-seq(start,end,1)
+format(day,"%a-%m%d")
+
+
+
+
+oneWeek <- seq(as.Date("2020-06-01"), as.Date("2020-06-07"), 1)
+resultStr <-paste(format(oneWeek,'%a'),format(oneWeek,'%m%d'),sep="-")
+resultStr
+
+a <- seq(20200601,20200607,1);
+a <-as.character(a)
+datea <- as.Date(a, format="%Y%m%d")
+format(datea, format="%a-%m%d")
+
+# 문제6
+v1<-c("Happy","Birthday","to","You")
+length(v1)
+sum(nchar(v1))
+
+v1 <- c('Happy', 'Birthday', 'to', 'You')
+sum(nchar(v1))
+
+# 문제7
+txt<-c(paste(v1,collapse =" "))
+length(txt)
+nchar(txt)
+
+
+resultStr <- paste(v1, collapse = " ")
+resultStr
+length(resultStr)
+nchar(resultStr)
+
+# 문제8
+paste(LETTERS[c(1:10)],c(1:10))
+paste(LETTERS[c(1:10)],c(1:10),sep='')
+paste0(LETTERS[c(1:10)],c(1:10))
+
+vRange <- seq(1, 10)
+resultStr1 <- paste(LETTERS[vRange], vRange, sep = " ")
+resultStr2 <- paste(LETTERS[vRange], vRange, sep = "")
+resultStr1; resultStr2
+
+# 문제9
+txt<-c("Good Morning")
+txt2<-unlist(strsplit(txt,split =' '))
+strsplit(txt2,split=" ")
+
+
+vStr <- 'Good Morning'
+vunlistStr <- unlist(strsplit(vStr, " "))
+resultStr <- strsplit(vunlistStr, " ")
+resultStr
+
+# 문제10
+(txt<-c("Yesterday is history, tommrrow is a mystery, today is a gift!", 
+       "That's why we call it the present – from kung fu Panda"))
+(txt<-gsub("[,–]",'',txt))
+# 다중 공백 제거
+(txt<-gsub("\\s+",' ',txt)) 
+word<-strsplit(txt,split=' ')
+word
+
+
+
+vStr <- c("Yesterday is history, tommrrow is a mystery, today is a gift!",
+          "That's why we call it the present – from kung fu Panda")
+vStr <- gsub("[,–]", "", vStr)
+vStr <- unlist(strsplit(vStr, " "))
+resultStr <- vStr[nchar(vStr) > 0]
+resultStr
+
+# 문제11
+ssn<-c("941215-1234567","850605-2345678","760830-1357913")
+substr(ssn, nchar(ssn)-6, nchar(ssn))<-"*******"
+print(ssn)
+
+
+ssn  <- c("941215-1234567", "850605-2345678", "760830-1357913")
+masking <- function(x) {
+  sx <- substr(x, 1, 7)
+  result <- paste(sx, "*******", sep='')
+  return(result)
+}
+resultStr <- sapply(ssn, masking)
+resultStr
+
+
+# 문제12
+s1<-"@^^@Have a nice day!! 좋은 하루!! 오늘도 100점 하루...."
+
+#(1)
+r1<-gsub("[가-힣]","",s1)
+print(r1)
+
+#(2)
+r2<-gsub("[[:punct:]]",'',s1)
+print(r2)
+
+#(3)
+r3<-gsub("[[:punct:]]|[가-힣]",'',s1)
+print(r3)
+
+#(4)
+r4<-gsub("100","백",s1)
+print(r4)
+
+
+s1 <- "@^^@Have a nice day!! 좋은 하루!! 오늘도 100점 하루...."
+r1 <- gsub("[가-힣]", "", s1)
+r2 <- gsub("[[:punct:]]", "", s1)
+# r3 <- gsub("[[가-힣][:punct:]]", "", s1)    # 안됨 ㅠㅠ
+r3p <- gsub("[가-힣]", "", s1)
+r3 <- gsub("[[:punct:]]", "", r3p)
+r4 <- gsub("100", "백", s1)
+s1; r1; r2; r3; r4
+
+
+
+
+
+#문제1
+
+
+# 기본 시각화 실습
+drv <- JDBC(driverClass = 'org.mariadb.jdbc.Driver', 'mariadb-java-client-2.6.2.jar')
+conn <- dbConnect(drv, 'jdbc:mariadb://127.0.0.1:3306/work', 'scott', 'tiger')
+library(showtext)
+showtext_auto()
+font_add(family = "cat", regular = "fonts/HoonWhitecatR.ttf")
+font_add(family = "dog", regular = "fonts/THEdog.ttf")
+font_add(family = "maple", regular = "fonts/MaplestoryBold.ttf")
+
+data1 <- dbReadTable(conn, 'productlog')
+(data2 <- table(data1$pid))
+
+# 문제 1
+png(filename="clicklog1.png", height=400, width=700, bg="white")
+par(mar=c(5,5,5,5), mfrow=c(1,1))
+barplot(data2, col=terrain.colors(10), main="세로바 그래프 실습", ylab="클릭수",
+        xlab="상품ID", ylim=c(0,100))
+dev.off()
+
+# 문제 2
+data3 <- data1$clicktime
+data3_hour <- substr(data3, 9, 10)
+table_data3 <- table(data3_hour)
+length(table_data3)
+
+
+names(table_data3)
+
+piename <- paste(as.integer(names(table_data3)), "~",as.integer(names(table_data3)) +1, sep='')
+names(table_data3) <- piename
+pie(table_data3, main="파이그래프 실습", col=rainbow(17))
+
+dev.copy(png, "clicklog2.png")
+dev.off()
+
+str(data1)
+clicktime <- as.POSIXlt(as.character(data1$clicktime),format="%Y%m%d%H%M")
+clickhour <- format(clicktime, "%H")
+table_data3 <- table(data3_hour)
+names(table_data3)
+piename <- paste(as.integer(names(table_data3)), "~",as.integer(names(table_data3)) +1, sep='')
+names(table_data3) <- piename
+pie(table_data3, main="파이그래프 실습", col=rainbow(17))
+
+# 문제3
+
+# 1.테이터 정리
+
+record <- read.table("data/성적.txt", header=TRUE)
+sub.record <- record[,3:5]
+
+# 2.차트 그리기
+boxplot(sub.record, col=rainbow(3), axes=F)
+axis(1, at=1:3, lab=names(sub.record), family="maple")
+axis(2, at=seq(2, 10, 2), family="maple")
+title("과목별 성적 분포", family="maple", cex.main=1.5, col.main="orange")
+box()
+
+# 3.이미지저장
+dev.copy(png, 'clicklog3.png')
+dev.off()
+
+
+# dplyr 패키지 실습(1)
+
+library(rJava)
+library(RJDBC)
+library(DBI)
+library(dplyr)
+
+drv <- JDBC(driverClass = 'org.mariadb.jdbc.Driver', 'mariadb-java-client-2.6.2.jar')
+conn <- dbConnect(drv, 'jdbc:mariadb://127.0.0.1:3306/work', 'scott', 'tiger')
+
+emp <- dbReadTable(conn, 'emp')
+
+# 문제0
+emp %>%
+  mutate(comm = ifelse(comm < 0, NA, comm)) -> emp
+
+emp %>%
+  mutate(mgr = ifelse(mgr < 0, NA, mgr)) -> emp
+
+
+
+# 문제1
+emp %>%
+  filter(job=="MANAGER")
+
+# 문제2
+emp %>%
+  select(empno, ename, sal)
+
+# 문제3
+emp %>%
+  select(-empno)
+
+# 문제4
+emp %>%
+  select(ename, sal)
+
+# 문제5
+emp %>%
+  group_by(job) %>%
+  tally()
+
+emp %>%
+  group_by(job) %>%
+  summarise(n=n())
+
+emp %>%
+  count(job)
+
+# 문제6
+emp %>%
+  filter(sal>=1000 & sal<=3000) %>%
+  select(ename, sal, empno)
+
+# 문제7
+emp %>%
+  filter(job!="ANALYST") %>%
+  select(ename, job, sal)
+
+# 문제8
+emp %>%
+  filter(job=="SALESMAN" | job=="ANALYST") %>%
+  select(ename, job)
+
+emp %>%
+  filter(job %in% c("SALESMAN","ANALYST")) %>%
+  select(ename, job)
+
+# 문제9
+emp %>% group_by(deptno) %>% 
+  summarise(sum_sal = sum(sal))
+
+
+
+# 문제10
+emp %>%
+  arrange(sal)
+
+# 문제11
+emp %>%
+  arrange(desc(sal)) %>%
+  head(1)
+
+# 문제12
+emp %>%
+  rename(commrate = comm,
+         salary = sal) -> empnew
+
+empnew <- emp %>%
+  rename(commrate = comm,
+         salary = sal)
+
+
+empnew
+emp
+
+# 문제13
+emp %>%
+  count(deptno) %>%
+  arrange(n) %>%
+  tail(1) %>%
+  select(deptno) 
+
+
+# 문제14 #글자수세는 함수 nchar()
+emp %>% mutate(enamelength=nchar(ename)) %>%
+  arrange(enamelength) %>% select(ename)
+
+# 문제15
+emp %>% filter(comm != "NA") %>% nrow()
+emp %>% filter(!is.na(comm)) %>% summarise(n=n())
+emp %>% filter(!is.na(comm)) %>% tally
+emp %>% filter(!is.na(comm)) %>% count
+
+
+# dplyr 패키지 실습(2)
+
+
+######### 문제1 #########
+mpg <- as.data.frame(ggplot2::mpg)
+
+# 1-1
+str(mpg)
+
+# 1-2
+dim(mpg)
+
+# 1-3
+# head(mpg, 10)
+mpg %>% head(10)
+
+# 1-4
+# tail(mpg, 10)
+mpg %>% tail(10)
+
+# 1-5
+View(mpg)
+
+# 1-6
+summary(mpg)
+
+# 1-7
+# table(mpg$manufacturer)
+mpg %>% 
+  group_by(manufacturer) %>% 
+  tally
+
+# 1-8
+mpg %>% 
+  group_by(manufacturer) %>% 
+  summarise(mf_n=n())
+
+
+######### 문제2 #########
+# 2-1
+mpg <- mpg %>% rename(city = cty, highway = hwy)
+
+# 2-2
+mpg %>% head
+
+
+######### 문제3 #########
+# 3-1
+midwest <- as.data.frame(ggplot2::midwest)
+str(midwest)
+dim(midwest)
+summary(midwest)
+# 3-2
+midwest %>% rename(total=poptotal,asian=popasian) -> midwest
+# 3-3
+midwest %>% mutate(prob_asian = asian/total*100) -> midwest
+# 3-4
+midwest %>% 
+  mutate(mean_asian=mean(prob_asian),
+         size_asian=ifelse(prob_asian > mean_asian,"large","small"))
+
+######### 문제4 #########
+# 4-1
+mpg <- as.data.frame(ggplot2::mpg)
+mpg %>% mutate(catDispl = ifelse(displ <= 4, "배기량4이하", "배기량5이상")) %>%
+  group_by(catDispl) %>% summarise(mean_hwy = mean(hwy))
+
+
+# 4-2
+mpg %>%
+  filter(manufacturer %in% c("audi", "toyota")) %>% 
+  group_by(manufacturer) %>% 
+  summarise(mean_cty = mean(cty)) 
+
+
+# 4-3
+mpg %>% 
+  filter(manufacturer %in% c("chevrolet","ford","honda")) %>% 
+  group_by(manufacturer) %>% 
+  summarise(mean_hwy=mean(hwy))
+
+
+######### 문제5 #########
+# 5-1
+mpg %>% 
+  select(class,city) -> mpg_sub
+head(mpg_sub)
+
+# 5-2
+mpg %>% 
+  filter(class %in% c("suv","compact")) %>% 
+  group_by(class) %>% 
+  summarise(mean_cty=mean(city))
+
+
+
+######### 문제6 #########
+# audi 모델 중 hwy연비가 좋은 모델
+
+mpg <- as.data.frame(ggplot2::mpg)
+
+mpg %>% filter(manufacturer == 'audi') %>%
+  group_by(model) %>% summarise(mean_hwy_audi = mean(hwy)) %>%
+  arrange(desc(mean_hwy_audi))
+
+
+
+# audi중 hwy연비가 좋은 자동차의 데이터
+
+mpg %>% filter(manufacturer == 'audi') %>%
+  arrange(desc(hwy)) %>% head(5)
