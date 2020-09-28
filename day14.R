@@ -67,6 +67,11 @@ wordcloud(words$keyword, words$freq,
           random.order = F, 
           rot.per = 0.5, scale = c(4, 1), 
           colors = rainbow(7))
+wordcloud(words$keyword, words$freq, 
+          min.freq = 2, 
+          random.order = F, 
+          rot.per = 0.5, scale = c(4, 1), 
+          colors = rainbow(20), family="lett")
 
 wordcloud2(words, fontFamily = "휴먼옛체")
 wordcloud2(words,rotateRatio = 1)
@@ -75,18 +80,21 @@ wordcloud2(words,rotateRatio = 0)
 wordcloud2(words,size=0.5,col="random-dark")
 wordcloud2(words,size=0.5,col="random-dark", figPath="data/peace.png")
 wordcloud2(words,size=0.7,col="random-light",backgroundColor = "black")
-wordcloud2(data = demoFreq)
+wordcloud2(data = demoFreq) #str(demoFreq)
 wordcloud2(data = demoFreq, figPath="data/peace.png")
 wordcloud2(data = demoFreq, shape = 'diamond')
 wordcloud2(data = demoFreq, shape = 'star')
 wordcloud2(data = demoFreq, shape = 'cardioid')
 wordcloud2(data = demoFreq, shape = 'triangle-forward')
 wordcloud2(data = demoFreq, shape = 'triangle')
+letterCloud(demoFreq, word = "R", size = 2)
 result<-wordcloud2(data = demoFreq, shape = 'pentagon')
 library(htmlwidgets)
 saveWidget(result,"tmpwc.html",selfcontained = F)
 head(demoFreq)
 str(demoFreq)
+
+wordcloud2(names(final), final)
 
 # 트위터 글 워드클라우드
 library(rtweet) 
