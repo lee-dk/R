@@ -46,10 +46,9 @@ for (n in 1:30) {
     remDr$executeScript("arguments[0].click();",pageLink_next)
     Sys.sleep(1)
     
-    #body > div.wrapper > div.container.content > div:nth-child(6) > div:nth-child(2) > div > ul > li.active
     curr_PageElem <- remDr$findElement(using='css', 'div.wrapper > div.container.content > div:nth-child(6) > div:nth-child(2) > div > ul > li.active')
     curr_PageNewNum <- as.numeric(curr_PageElem$getElementText())
-    #cat(paste(curr_PageOldNum,'페이지 \n'))
+
     if(curr_PageNewNum == curr_PageOldNum)  {
       cat("종료\n")
       #태그 하나 종료 시 다시 처음 화면으로
