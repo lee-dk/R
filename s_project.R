@@ -7,25 +7,23 @@ remDr$open()
 site <- 'https://www.acmicpc.net/problem/tags'
 remDr$navigate(site)
 
-#problem_title <- NULL
-#problem_submit <- NULL
-pageLink <- NULL
-algo_title <- NULL
-problem_num <- NULL
-answer_percent <- NULL
+#작업 디렉토리 안에 새폴더 생성(csv파일을 여러개 만들면 알아보기 힘들까봐 생성함..)
+dir.create('BEAKJOON')
 
-for (n in 98:99) {
-answer_percent <- NULL
-  #태그로 이동_문제수가 100 넘어가는 것들만 1~30번까지
+for (n in 29:30) {
+  pageLink <- NULL
+  algo_title <- NULL
+  problem_num <- NULL
+  answer_percent <- NULL
+
+  #태그로 이동_문제수 100문제이상만 1~30번까지
   Sys.sleep(5)
   pageLink <- remDr$findElements(using='xpath',
                                  value= paste0('/html/body/div[3]/div[2]/div[5]/div/div/table/tbody/tr[', n, ']/td[1]/a'))
-  
   #알고리즘 태그명
   algo_titles <- sapply(pageLink, function(x) {x$getElementText()})
   print(algo_titles)
   algo_title <- append(algo_title, unlist(algo_titles))
-  
   
   #태그별 문제수
   algo_node <- remDr$findElements(using='xpath',
@@ -33,7 +31,6 @@ answer_percent <- NULL
   problem_nums <- sapply(algo_node, function(x) {x$getElementText()})
   print(problem_nums)
   problem_num <- append(problem_num, unlist(problem_nums))
-  
   
   #태그 클릭
   remDr$executeScript("arguments[0].click();",pageLink)
@@ -43,26 +40,14 @@ answer_percent <- NULL
   curr_PageOldNum <- 0
   
   repeat{
-    #문제 제목
-    #problem_nodes <- remDr$findElements(using='css', '#problemset > tbody > tr > td:nth-child(2)')
-    #problem_titles <- sapply(problem_nodes, function(x) {x$getElementText()})
-    #print(problem_titles)
-    #problem_title <- append(problem_title, unlist(problem_titles))
-    
-    #제출한 사람
-    #problem_nodes <- remDr$findElements(using='css', '#problemset > tbody > tr > td:nth-child(5)')
-    #problem_submits <- sapply(problem_nodes, function(x) {x$getElementText()})
-    #print(problem_submits)
-    #problem_submit <- append(problem_submit, unlist(problem_submits))
-    
-    
     #정답 비율
-    problem_nodes <- remDr$findElements(using='css', '#problemset > tbody > tr > td:nth-child(6)')
+    problem_nodes <- remDr$findElements(using='xpath',
+                                    value= paste0('//*[@id="problemset"]/tbody/tr/td[6]'))
     answer_percents <- sapply(problem_nodes, function(x) {x$getElementText()})
-    #print(answer_percents)
     answer_percent <- append(answer_percent, unlist(answer_percents))
     
     #다음페이지(다음 버튼이 없는데 다음 페이지의 숫자에 자동으로 #next_page가 붙음..좋은 사이트)
+    #단점은 문제수가 100이 안되는 경우(다음페이지가 없을 경우)에는 비율이 두번 저장됨...
     pageLink_next <- remDr$findElements(using='css',"#next_page")
     remDr$executeScript("arguments[0].click();",pageLink_next)
     Sys.sleep(1)
@@ -75,14 +60,17 @@ answer_percent <- NULL
       #태그 하나 종료 시 다시 처음 화면으로
       site <- 'https://www.acmicpc.net/problem/tags'
       remDr$navigate(site)
-      df <- data.frame(algo_title, problem_num, answer_percent)
-      write.csv(df, 'BEAKJOON.csv')#, append = T)
+      # csv안에 데이터프레임의 구성은 변경 가능(현재는 문제수, 정답비율 만 보이게함.)
+      df <- data.frame(problem_num, answer_percent, check.rows = FALSE)
+      # 파일명 생성
+      file_name <- paste0(df[n,"algo_title"],".csv")
+      # 저장 경로지정 + 순서 + 파일 이름
+      save_name <- paste0("./BEAKJOON/", n, "_", file_name)
+      # 파일 저장
+      write.csv(df, save_name)
       break; 
     }
     curr_PageOldNum <- curr_PageNewNum;
   }
 }
-df <- data.frame(algo_title, problem_num, answer_percent)
-View(df)
-write.csv(df, 'BEAKJOON.csv')
-rm(df)
+
