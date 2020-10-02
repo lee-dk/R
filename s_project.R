@@ -10,7 +10,7 @@ remDr$navigate(site)
 #작업 디렉토리 안에 새폴더 생성(csv파일을 여러개 만들면 알아보기 힘들까봐 생성함..)
 dir.create('BEAKJOON')
 
-for (n in 29:30) {
+for (n in 1:30) {
   pageLink <- NULL
   algo_title <- NULL
   problem_num <- NULL
