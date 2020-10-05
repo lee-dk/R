@@ -5,6 +5,7 @@ g <- diamonds[order(diamonds$table), ]
 head(g)  
 tail(g)
 
+class(g)
 
 gg <- ggplot(diamonds, aes(x=carat, y=price))
 gg+geom_point()
