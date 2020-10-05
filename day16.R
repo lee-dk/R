@@ -258,7 +258,7 @@ bar_chart <- function(feature){
   print(select_v)
   df <<- train[select_v]
   df$Survived <<- ifelse(df$Survived == 1, 'Survived', 'Dead')
-  ggplot(df, aes(Survived)) + geom_bar(aes(fill=Sex))
+  ggplot(df, aes(Survived)) + geom_bar(aes(fill=.data[feature]))
 }
 
 bar_chart('Sex')
