@@ -305,15 +305,7 @@ ggplot(df, aes(Survived)) + geom_bar(aes(fill=Embarked))
 library(dplyr)
 install.packages("gridExtra")
 library(gridExtra)
-# 나이에 따른 생존 여부
 
-select_v <- c('Survived', 'Age')
-df <- train[select_v]
-df$Age <- ifelse(is.na(df$Age), median(df$Age, na.rm=T), df$Age)
-#df$Aaeclass <- ifelse(df$Age < 7, '영유아',
-#                      ifelse(df$Age < 10, '영유아',)
-df$Survived <- ifelse(df$Survived == 1, 'Survived', 'Dead')
-ggplot(df, aes(Age, Survived)) + geom_bar()
 
 age.p1 <- df %>% 
   ggplot(aes(Age)) + 
