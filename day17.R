@@ -319,7 +319,7 @@ y.hat
 
 fdata <- read.csv("data/factory.csv")
 str(fdata)
-detach(fdata)
+attach(fdata)
 #1.1 fdata의 산점도
 plot(fdata$age, fdata$cost, xlab="사용연도", ylab="정비비용", pch=19, col="blue", cex.lab=1.5)
 title("사용연도와 정비비용", cex.main=2, col.main="red") 
@@ -352,3 +352,41 @@ title("변수 표준화 후의 사용연도와 정비비용", cex.main=2, col.ma
 abline(st_factory.lm, col="red")
 summary(st_factory.lm)
 detach(st_fdata)
+
+
+tadata <- read.csv("data/TAccident.csv")
+start.lm <- lm(Y~1, data=tadata)
+full.lm <- lm(Y~., data=tadata)
+
+#(1) 앞으로부터 선택법
+step(start.lm, scope=list(lower=start.lm, upper=full.lm), direction="forward")
+Y ~ 1
+Y ~ X9
+Y ~ X9 + X1
+Y ~ X9 + X1 + X4
+Y ~ X9 + X1 + X4 + X8
+Y ~ X9 + X1 + X4 + X8 + X12
+#(2) 뒤로부터 제거법
+step(full.lm, data=tadata, direction="backward")
+Y ~ X1 + X2 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13
+Y ~ X1 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X10 + X11 + X12 + X13
+Y ~ X1 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X11 + X12 + X13
+Y ~ X1 + X3 + X4 + X5 + X6 + X7 + X8 + X9 + X12 + X13
+Y ~ X1 + X3 + X4 + X6 + X7 + X8 + X9 + X12 + X13
+Y ~ X1 + X3 + X4 + X7 + X8 + X9 + X12 + X13
+Y ~ X1 + X3 + X4 + X8 + X9 + X12 + X13
+Y ~ X1 + X3 + X4 + X8 + X9 + X12
+Y ~ X1 + X4 + X8 + X9 + X12
+#(3) 단계별 회귀방법
+step(start.lm, scope=list(upper=full.lm), data=tadata, direction="both")
+Y ~ 1
+Y ~ X9
+Y ~ X9 + X1
+Y ~ X9 + X1 + X4
+Y ~ X9 + X1 + X4 + X8
+Y ~ X9 + X1 + X4 + X8 + X12
+#(4) 모든 회귀방법
+install.packages("leaps")
+library(leaps)
+all.lm <- regsubsets(Y~., data=tadata)
+(rs <- summary(all.lm))
