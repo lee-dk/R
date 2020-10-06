@@ -8,7 +8,7 @@ site <- 'https://www.acmicpc.net/problem/tags'
 remDr$navigate(site)
 
 #작업 디렉토리 안에 새폴더 생성(csv파일을 여러개 만들면 알아보기 힘들까봐 생성함..)
-dir.create('BEAKJOON')
+dir.create('BAEKJOON')
 
 for (n in 1:30) {
   pageLink <- NULL
