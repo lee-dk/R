@@ -319,7 +319,7 @@ y.hat
 
 fdata <- read.csv("data/factory.csv")
 str(fdata)
-detach(fdata)
+attach(fdata)
 #1.1 fdata의 산점도
 plot(fdata$age, fdata$cost, xlab="사용연도", ylab="정비비용", pch=19, col="blue", cex.lab=1.5)
 title("사용연도와 정비비용", cex.main=2, col.main="red") 
