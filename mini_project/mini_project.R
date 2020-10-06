@@ -71,7 +71,6 @@ for(n in 1:src_file_cnt){
   
   
   #테이블을 그래프로 그린다.
-  
   baekjoon <- ggplot(tab, aes(x=tag,y=round(percent,2),group=1))+
     geom_point(color="steelblue",stroke=1)+
     geom_line(color="steelblue")+
