@@ -11,8 +11,6 @@ src_dir
 src_file <- list.files(src_dir)
 src_file
 
-
-
 src_file_cnt <- length(src_file)
 src_file_cnt
 
@@ -66,7 +64,6 @@ for(n in 1:src_file_cnt){
                                     round(d,2),round(e,2),round(f,2),
                                     round(g,2),round(h,2),round(i,2),round(j,2)))
   names(tab) <- c("tag", "percent")
-  print(src_file[n])
   print(head(tab))
   
   
@@ -77,6 +74,7 @@ for(n in 1:src_file_cnt){
     geom_label(aes(label=percent), nudge_y=1)+
     labs(x="정답율(%)", y="문제 비율(%)", title=src_file[n])
   print(baekjoon)
+  ggsave(paste0(gsub("[[:digit:][:punct:][:lower:][:upper:]]","",src_file[i]),".png"))
 }
 
 

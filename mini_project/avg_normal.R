@@ -37,7 +37,6 @@ avg_level <- ggplot(total, aes(x=algo_title,y=mean_percent,group=1))+
 print(avg_level)
 ggsave("알고리즘 별 평균 정답율.png")
 
-
 # total 난이도 순으로 표를 그린다.
 total <- total[order(-total$mean_percent),]
 View(total)
