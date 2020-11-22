@@ -34,4 +34,13 @@ for (n in 2:11) {
   order_dates <- sapply(order_date_node, function(x) {x$getElementText()})
   print(order_dates)
   #order_date <- append(order_date, unlist(order_dates))
+  
+  #주문음식
+  order_item_node <- remDr$findElements(using='css',
+                                        value= paste0('#review > li:nth-child(',n,') > div.order-items.default.ng-binding'))
+  order_items <- sapply(order_item_node, function(x) {x$getElementText()})
+  print(order_items)
+  #order_item <- append(order_item, unlist(order_items))
+  
+  
 }
