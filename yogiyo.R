@@ -21,5 +21,17 @@ remDr$executeScript("arguments[0].click();",pageLink)
 #dir.create('yogiyo')
 
 for (n in 2:11) {
+  #아이디
+  user_id_node <- remDr$findElements(using='css',
+                                  value= paste0('#review > li:nth-child(',n,') > div:nth-child(1) > span.review-id.ng-binding'))
+  users_id <- sapply(user_id_node, function(x) {x$getElementText()})
+  print(users_id)
+  #user_id <- append(user_id, unlist(users_id))
   
+  #주문날짜
+  order_date_node <- remDr$findElements(using='css',
+                                     value= paste0('#review > li:nth-child(',n,') > div:nth-child(1) > span.review-time.ng-binding'))
+  order_dates <- sapply(order_date_node, function(x) {x$getElementText()})
+  print(order_dates)
+  #order_date <- append(order_date, unlist(order_dates))
 }
