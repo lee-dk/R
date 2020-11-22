@@ -42,5 +42,17 @@ for (n in 2:11) {
   print(order_items)
   #order_item <- append(order_item, unlist(order_items))
   
+  #맛 평점
+  point_node <- remDr$findElements(using='css',
+                                        value= paste0('#review > li:nth-child(',n,') > div:nth-child(2) > div > span.category > span:nth-child(3)'))
+  points <- sapply(point_node, function(x) {x$getElementText()})
+  print(points)
+  #point <- append(point, unlist(points))
   
+  #코멘트
+  comment_node <- remDr$findElements(using='css',
+                                   value= paste0('#review > li:nth-child(',n,') > p'))
+  comments <- sapply(comment_node, function(x) {x$getElementText()})
+  print(comments)
+  #comment <- append(comment, unlist(comments))
 }
