@@ -18,8 +18,63 @@ pageLink <- remDr$findElements(using='css',
 remDr$executeScript("arguments[0].click();",pageLink)
 
 #작업 디렉토리에 새폴더 생성(csv파일 저장 폴더)
-#dir.create('yogiyo')
+dir.create('yogiyo')
 
+webElem <- remDr$findElement("css", "body")
+
+repeat {
+  Sys.sleep(2)
+  pageLink_next <- remDr$findElements(using='css',"#review > li.list-group-item.btn-more > a")
+
+  pageLink_next <- remDr$findElements(using='css',"#review > li.list-group-item.btn-more > a")
+  remDr$mouseMoveToLocation(webElement = pageLink_next[[1]])
+  remDr$click()
+  Sys.sleep(2)
+  webElem$sendKeysToElement(list(key = "end"))
+}
+
+users_id <- NULL
+order_dates <- NULL
+order_items <- NULL
+points <- NULL
+comments <- NULL
+
+#아이디
+user_id_node <- remDr$findElements(using='css',
+                                   value= paste0('#review > li > div:nth-child(1) > span.review-id.ng-binding'))
+users_id <- sapply(user_id_node, function(x) {x$getElementText()})
+#print(users_id)
+
+#주문날짜
+order_date_node <- remDr$findElements(using='css',
+                                      value= paste0('#review > li > div:nth-child(1) > span.review-time.ng-binding'))
+order_dates <- sapply(order_date_node, function(x) {x$getElementText()})
+#print(order_dates)
+
+#주문음식
+order_item_node <- remDr$findElements(using='css',
+                                      value= paste0('#review > li > div.order-items.default.ng-binding'))
+order_items <- sapply(order_item_node, function(x) {x$getElementText()})
+#print(order_items)
+
+#맛 평점
+point_node <- remDr$findElements(using='css',
+                                 value= paste0('#review > li > div:nth-child(2) > div > span.category > span:nth-child(3)'))
+points <- sapply(point_node, function(x) {x$getElementText()})
+#print(points)
+
+#코멘트
+comment_node <- remDr$findElements(using='css',
+                                   value= paste0('#review > li > p'))
+comments <- sapply(comment_node, function(x) {x$getElementText()})
+#print(comments)
+
+df <- data.frame(users_id, order_dates, order_items, points, comments)
+# 파일 저장
+write.csv(df, "yogiyo_review_data.csv")
+
+
+#더보기로인해서 n의 수가 11이상이 되므로 for문으로 2:11을 하면 안됨....10개 추출하고 더보기누르고 10개 뽑고 해야할듯...?
 for (n in 2:11) {
   #아이디
   user_id_node <- remDr$findElements(using='css',
@@ -53,6 +108,13 @@ for (n in 2:11) {
   comment_node <- remDr$findElements(using='css',
                                    value= paste0('#review > li:nth-child(',n,') > p'))
   comments <- sapply(comment_node, function(x) {x$getElementText()})
+  #comments <- gsub("[[:punct:]]", "", comments)  #특수문자 제거(이모티콘)
   print(comments)
   #comment <- append(comment, unlist(comments))
+  
+  Sys.sleep(1)
 }
+df <- data.frame(users_id, order_dates, order_items, points, comments)
+View(df)
+# 파일 저장
+write.csv(df, "yogiyo_review_data.csv")
