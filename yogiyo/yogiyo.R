@@ -33,88 +33,43 @@ repeat {
   webElem$sendKeysToElement(list(key = "end"))
 }
 
-users_id <- NULL
-order_dates <- NULL
-order_items <- NULL
-points <- NULL
-comments <- NULL
+user_id <- NULL; order_date <- NULL; order_item <- NULL; point <- NULL; comment <- NULL
 
 #아이디
 user_id_node <- remDr$findElements(using='css',
                                    value= paste0('#review > li > div:nth-child(1) > span.review-id.ng-binding'))
 users_id <- sapply(user_id_node, function(x) {x$getElementText()})
 #print(users_id)
+user_id <- append(user_id, unlist(users_id))
 
 #주문날짜
 order_date_node <- remDr$findElements(using='css',
                                       value= paste0('#review > li > div:nth-child(1) > span.review-time.ng-binding'))
 order_dates <- sapply(order_date_node, function(x) {x$getElementText()})
 #print(order_dates)
+order_date <- append(order_date, unlist(order_dates))
 
 #주문음식
 order_item_node <- remDr$findElements(using='css',
                                       value= paste0('#review > li > div.order-items.default.ng-binding'))
 order_items <- sapply(order_item_node, function(x) {x$getElementText()})
 #print(order_items)
+order_item <- append(order_item, unlist(order_items))
 
 #맛 평점
 point_node <- remDr$findElements(using='css',
                                  value= paste0('#review > li > div:nth-child(2) > div > span.category > span:nth-child(3)'))
 points <- sapply(point_node, function(x) {x$getElementText()})
 #print(points)
+point <- append(point, unlist(points))
 
 #코멘트
 comment_node <- remDr$findElements(using='css',
                                    value= paste0('#review > li > p'))
 comments <- sapply(comment_node, function(x) {x$getElementText()})
 #print(comments)
+comment <- append(comment, unlist(comments))
 
-df <- data.frame(users_id, order_dates, order_items, points, comments)
-# 파일 저장
-write.csv(df, "yogiyo_review_data.csv")
-
-
-#더보기로인해서 n의 수가 11이상이 되므로 for문으로 2:11을 하면 안됨....10개 추출하고 더보기누르고 10개 뽑고 해야할듯...?
-for (n in 2:11) {
-  #아이디
-  user_id_node <- remDr$findElements(using='css',
-                                  value= paste0('#review > li:nth-child(',n,') > div:nth-child(1) > span.review-id.ng-binding'))
-  users_id <- sapply(user_id_node, function(x) {x$getElementText()})
-  print(users_id)
-  #user_id <- append(user_id, unlist(users_id))
-  
-  #주문날짜
-  order_date_node <- remDr$findElements(using='css',
-                                     value= paste0('#review > li:nth-child(',n,') > div:nth-child(1) > span.review-time.ng-binding'))
-  order_dates <- sapply(order_date_node, function(x) {x$getElementText()})
-  print(order_dates)
-  #order_date <- append(order_date, unlist(order_dates))
-  
-  #주문음식
-  order_item_node <- remDr$findElements(using='css',
-                                        value= paste0('#review > li:nth-child(',n,') > div.order-items.default.ng-binding'))
-  order_items <- sapply(order_item_node, function(x) {x$getElementText()})
-  print(order_items)
-  #order_item <- append(order_item, unlist(order_items))
-  
-  #맛 평점
-  point_node <- remDr$findElements(using='css',
-                                        value= paste0('#review > li:nth-child(',n,') > div:nth-child(2) > div > span.category > span:nth-child(3)'))
-  points <- sapply(point_node, function(x) {x$getElementText()})
-  print(points)
-  #point <- append(point, unlist(points))
-  
-  #코멘트
-  comment_node <- remDr$findElements(using='css',
-                                   value= paste0('#review > li:nth-child(',n,') > p'))
-  comments <- sapply(comment_node, function(x) {x$getElementText()})
-  #comments <- gsub("[[:punct:]]", "", comments)  #특수문자 제거(이모티콘)
-  print(comments)
-  #comment <- append(comment, unlist(comments))
-  
-  Sys.sleep(1)
-}
-df <- data.frame(users_id, order_dates, order_items, points, comments)
-View(df)
+df <- data.frame(user_id, order_date, order_item, point, comment, check.rows = FALSE)
 # 파일 저장
 write.csv(df, "yogiyo_review_data.csv")
